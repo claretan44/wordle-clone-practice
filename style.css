@@ -1,0 +1,30 @@
+* {
+    box-sizing: border-box;
+    font-family: "DM Sans", sans-serif;
+}
+
+.wrapper {
+    width: 25%;
+    margin:auto;
+}
+
+.title {
+    text-align: center;
+    border-bottom: 2px solid black;
+    padding: 2rem;
+    margin-bottom: 3rem;
+}
+.word-row {
+    display:flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+}
+.letter {
+    font-size:24px;
+    font-weight: bold;
+    text-align: center;
+    aspect-ratio: 1;
+    padding: 0;
+    border: 2px solid #CCCCCC;
+    text-transform: uppercase;
+}
