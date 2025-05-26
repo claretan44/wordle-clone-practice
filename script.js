@@ -1,23 +1,35 @@
+let currLetter = 1;
+let currRow = 1;
+let currTile;
+let letterClass;
+let rowClass;
+
+
 function isLetter(letter)
 {
     return /^[a-zA-Z]$/.test(letter);
 }
 
 document.addEventListener('DOMContentLoaded', function(event){
-    const container = document.querySelector('.wrapper');
-    container.addEventListener('keydown', function(event){
+    document.addEventListener('keydown', function(event){
         /*stop non-alpha characters */
-        if(!isLetter(event.key))
+        if(isLetter(event.key))
         {
-            /*check for 'Enter', 'Backspace', 'Tab' and 'Shift' and 'CapsLock'*/
+            rowClass = `row-${currRow}`;
+            letterClass = `letter-${currLetter}`;
+            currTile = document.querySelector(`div.letter.${rowClass}.${letterClass}`);
+            currTile.innerHTML = event.key;
+
+        }
+        else
+        {
+            /*check for 'Enter', 'Backspace', and 'Shift' and 'CapsLock'*/
             /* TODO: allow backspace to go back to previous forms but NOT to submitted words*/
             /* TODO: stop user from going to a succeeding word if a previous one hasn't been submitted */
             switch(event.key){
                 case 'Enter':
                     break;
                 case 'Backspace':
-                    break;
-                case 'Tab':
                     break;
                 case 'Shift':
                     break;
