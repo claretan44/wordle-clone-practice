@@ -11,14 +11,20 @@ function isLetter(letter)
     return /^[a-zA-Z]$/.test(letter);
 }
 
+function getCurrentTile()
+{
+    rowClass = `row-${currRow}`;
+    letterClass = `letter-${currLetter}`;
+    currTile = document.querySelector(`div.letter.${rowClass}.${letterClass}`);
+    return currTile;
+}
+
 document.addEventListener('DOMContentLoaded', function(event){
     document.addEventListener('keydown', function(event){
         /*stop non-alpha characters */
         if(isLetter(event.key))
         {
-            rowClass = `row-${currRow}`;
-            letterClass = `letter-${currLetter}`;
-            currTile = document.querySelector(`div.letter.${rowClass}.${letterClass}`);
+            currTile = getCurrentTile();
             currTile.innerHTML = event.key;
             if(currLetter===5)
             {
@@ -32,10 +38,8 @@ document.addEventListener('DOMContentLoaded', function(event){
         }
         else
         {
-            /*check for 'Enter', 'Backspace', and 'Shift' and 'CapsLock'*/
             /* TODO: allow backspace to go back to previous forms but NOT to submitted words*/
             /* also make sure backspace resets filledword to false if needed */
-            /* TODO: stop user from going to a succeeding word if a previous one hasn't been submitted */
             switch(event.key){
                 case 'Enter':
                     if(filledWord)
@@ -50,6 +54,18 @@ document.addEventListener('DOMContentLoaded', function(event){
                     } 
                     break;
                 case 'Backspace':
+                    if (currLetter === 5 && filledWord)
+                    {
+                        currTile = getCurrentTile();
+                        currTile.innerHTML = '';
+                        filledWord = false;
+                    }
+                    else if (currLetter>1)
+                    {
+                        currLetter -= 1;
+                        currTile = getCurrentTile();
+                        currTile.innerHTML = '';
+                    }
                     break;
                 case 'Shift':
                     break;
