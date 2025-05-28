@@ -17,13 +17,24 @@ function hideLoading(){
     loadingDiv.innerHTML = '';
     loadingDiv.style.margin = '0';
 }
+
+function showError(){
+    const loadingDiv = document.querySelector('.loading-status');
+    loadingDiv.innerHTML = 'error: could not get word of the day';
+}
 async function getWordOfDay()
 {
     showLoading();
-    const response = await fetch('https://words.dev-apis.com/word-of-the-day');
-    const processedObject = await response.json();
-    wordOfTheDay = processedObject.word;
-    hideLoading();
+    try{
+        const response = await fetch('https://words.dev-apis.com/word-of-the-day');
+        const processedObject = await response.json();
+        wordOfTheDay = processedObject.word;
+        hideLoading();
+    }
+    catch(error)
+    {
+        showError();
+    }
 }
 
 function isLetter(letter)
