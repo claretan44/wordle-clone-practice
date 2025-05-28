@@ -98,14 +98,19 @@ document.addEventListener('DOMContentLoaded', function(event){
                 }
                 else
                 {
-                    /* TODO: allow backspace to go back to previous forms but NOT to submitted words*/
-                    /* also make sure backspace resets filledword to false if needed */
                     switch(event.key){
                         case 'Enter':
                             if(filledWord)
                             {
-                                /*TODO: function to submit word here */
-                                console.log(getUserWord());
+                                let guess = getUserWord();
+                                if (guess === wordOfTheDay)
+                                {
+                                    alert("YOU WIN!!!");
+                                }
+                                else
+                                {
+                                    alert("Wrong guess");
+                                }
                                 filledWord = false;
                                 if (currRow < 6)
                                 {
