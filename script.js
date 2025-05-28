@@ -27,13 +27,20 @@ async function getWordOfDay()
     showLoading();
     try{
         const response = await fetch('https://words.dev-apis.com/word-of-the-day');
-        const processedObject = await response.json();
-        wordOfTheDay = processedObject.word;
-        hideLoading();
+        if (!response.ok){
+            showError();
+            throw new Error(`Response status: ${response.status}`);
+        }
+        else{
+            const processedObject = await response.json();
+            wordOfTheDay = processedObject.word;
+            hideLoading();
+        }
     }
     catch(error)
     {
         showError();
+        throw new Error('No Word Available');
     }
 }
 
