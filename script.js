@@ -54,7 +54,7 @@ function getUserWord()
 
     for(let i=1; i<=5; i++)
     {
-        currTile = document.querySelector(`div.letter.row-${currRow}.letter-${i}`);
+        currTile = getTile(currRow,i);
         chara = currTile.innerHTML;
         userWord += chara;
     }
@@ -68,11 +68,11 @@ function isLetter(letter)
     return /^[a-zA-Z]$/.test(letter);
 }
 
-/*returns the div for the next blank tile to be added to*/
-function getCurrentTile()
+/*returns the div for the tile at a row and column*/
+function getTile(rowNum, letterNum)
 {
-    rowClass = `row-${currRow}`;
-    letterClass = `letter-${currLetter}`;
+    rowClass = `row-${rowNum}`;
+    letterClass = `letter-${letterNum}`;
     currTile = document.querySelector(`div.letter.${rowClass}.${letterClass}`);
     return currTile;
 }
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function(event){
                 /*stop non-alpha characters */
                 if(isLetter(event.key))
                 {
-                    currTile = getCurrentTile();
+                    currTile = getTile(currRow,currLetter);
                     currTile.innerHTML = event.key;
                     if(currLetter===5)
                     {
@@ -126,14 +126,14 @@ document.addEventListener('DOMContentLoaded', function(event){
                         case 'Backspace':
                             if (currLetter === 5 && filledWord)
                             {
-                                currTile = getCurrentTile();
+                                currTile = getTile(currRow,currLetter);
                                 currTile.innerHTML = '';
                                 filledWord = false;
                             }
                             else if (currLetter>1)
                             {
                                 currLetter -= 1;
-                                currTile = getCurrentTile();
+                                currTile = getTile(currRow,currLetter);
                                 currTile.innerHTML = '';
                             }
                             break;
