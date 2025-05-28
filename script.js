@@ -77,6 +77,25 @@ function getTile(rowNum, letterNum)
     return currTile;
 }
 
+/* the following functions change the css of a given tile depending on the guess */
+function greenTile(tile)
+{
+    tile.style.color = 'white';
+    tile.style.backgroundColor = 'green';
+}
+
+function yellowTile(tile)
+{
+    tile.style.color = 'white';
+    tile.style.backgroundColor = 'goldenrod';
+}
+
+function greyTile(tile)
+{
+    tile.style.color = 'white';
+    tile.style.backgroundColor = 'grey';
+}
+
 document.addEventListener('DOMContentLoaded', function(event){
     getWordOfDay().then(function(response){
         document.addEventListener('keydown', function(event){
