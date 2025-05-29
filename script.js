@@ -19,9 +19,9 @@ function hideLoading(){
     loadingDiv.style.margin = '0';
 }
 
-function showError(){
+function showError(errorMessage){
     const loadingDiv = document.querySelector('.loading-status');
-    loadingDiv.innerHTML = 'error: could not get word of the day';
+    loadingDiv.innerHTML = errorMessage;
 }
 async function getWordOfDay()
 {
@@ -29,7 +29,7 @@ async function getWordOfDay()
     try{
         const response = await fetch('https://words.dev-apis.com/word-of-the-day');
         if (!response.ok){
-            showError();
+            showError('error: could not get word of the day');
             throw new Error(`Response status: ${response.status}`);
         }
         else{
@@ -40,7 +40,7 @@ async function getWordOfDay()
     }
     catch(error)
     {
-        showError();
+        showError('error: could not get word of the day');
         throw new Error('No Word Available');
     }
 }
@@ -151,7 +151,20 @@ function showWin(rowNumber){
         greenTile(tile);
     }
 }
+/*
+async function validateWord(userWord){
+    try
+    {
 
+    }
+    catch(error)
+    {
+
+    }
+}
+function isAWord(userWord){
+    return true;
+} */
 document.addEventListener('DOMContentLoaded', function(event){
     getWordOfDay().then(function(response){
         document.addEventListener('keydown', function(event){
@@ -178,24 +191,30 @@ document.addEventListener('DOMContentLoaded', function(event){
                             if(filledWord)
                             {
                                 let guess = getUserWord().toLowerCase();
-                                if (guess === wordOfTheDay)
-                                {
-                                    showWin(currRow);
-                                    alert("YOU WIN!!!");
+                                if(isAWord(guess)){
+                                    if (guess === wordOfTheDay)
+                                    {
+                                        showWin(currRow);
+                                        alert("YOU WIN!!!");
+                                    }
+                                    else
+                                    {
+                                        processGuess(currRow, guess);
+                                    }
+                                    filledWord = false;
+                                    if (currRow < 6)
+                                    {
+                                        currRow += 1;
+                                        currLetter = 1;
+                                    }
+                                    else if (currRow = 6)
+                                    {
+                                        finishedGame = true; //prevent more typing after the last guess
+                                    }
                                 }
                                 else
                                 {
-                                    processGuess(currRow, guess);
-                                }
-                                filledWord = false;
-                                if (currRow < 6)
-                                {
-                                    currRow += 1;
-                                    currLetter = 1;
-                                }
-                                else if (currRow = 6)
-                                {
-                                    finishedGame = true; //prevent more typing after the last guess
+                                    //Todo: show the word was not a word
                                 }
                             } 
                             break;
