@@ -34,7 +34,7 @@ async function getWordOfDay()
         }
         else{
             const processedObject = await response.json();
-            wordOfTheDay = processedObject.word;
+            wordOfTheDay = processedObject.word.toLowerCase();
             hideLoading();
         }
     }
@@ -96,6 +96,62 @@ function greyTile(tile)
     tile.style.backgroundColor = 'grey';
 }
 
+function processGuess(rowNum, userGuess)
+{
+    let tile;
+    let userChara;
+    let wordChara;
+    let lettersInWordOfDay = Array.from(wordOfTheDay);
+
+    // check for grey and green tiles
+    for (let i = 1; i<=5; i++)
+    {
+        tile = getTile(rowNum, i);
+        userChara = userGuess.charAt(i-1);
+        if (wordOfTheDay.includes(userChara))
+        {
+            wordChara = wordOfTheDay.charAt(i-1);
+            if (userChara === wordChara)
+            {
+                greenTile(tile);
+                // replace it with a non alphabetic character so it doesn't get counted by yellow tiles later
+                lettersInWordOfDay[i-1] = '3';
+            }
+        }
+        else
+        {
+            greyTile(tile);
+        }
+    }
+
+    // check for yellow tiles that aren't green tiles
+    // this needs to be done after the first loop in cases like spool guessed against prior
+    // to prevent the first o getting marked, the o is removed in the word array by the first loop
+
+    for (let i = 1; i<=5; i++)
+    {
+        tile = getTile(rowNum, i);
+        userChara = userGuess.charAt(i-1);
+        if (lettersInWordOfDay.includes(userChara))
+        {
+            // all green tile characters have already been replaced
+            yellowTile(tile);
+            // remove so it doesn't get counted twice
+            const index = lettersInWordOfDay.indexOf(userChara);
+            lettersInWordOfDay[index] = '3';
+        }
+    }
+
+}
+
+function showWin(rowNumber){
+    for(let i = 1; i<=5; i++)
+    {
+        let tile = getTile(rowNumber, i);
+        greenTile(tile);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function(event){
     getWordOfDay().then(function(response){
         document.addEventListener('keydown', function(event){
@@ -121,14 +177,15 @@ document.addEventListener('DOMContentLoaded', function(event){
                         case 'Enter':
                             if(filledWord)
                             {
-                                let guess = getUserWord();
+                                let guess = getUserWord().toLowerCase();
                                 if (guess === wordOfTheDay)
                                 {
+                                    showWin(currRow);
                                     alert("YOU WIN!!!");
                                 }
                                 else
                                 {
-                                    alert("Wrong guess");
+                                    processGuess(currRow, guess);
                                 }
                                 filledWord = false;
                                 if (currRow < 6)
