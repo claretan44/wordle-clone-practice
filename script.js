@@ -1,3 +1,7 @@
+/*NOTE TO FUTURE ME: the api post request is working (yay!) as in, sending to the url and receiving data
+but I haven't integrated it into the game yet so it just does console.log for now
+cause it's a.. async return so idk how to make the main game wait for it xD */
+
 let currLetter = 1;
 let currRow = 1;
 let currTile;
@@ -151,20 +155,38 @@ function showWin(rowNumber){
         greenTile(tile);
     }
 }
-/*
+
 async function validateWord(userWord){
     try
     {
-
+        const contents = 
+        {
+            word: userWord,
+        };
+        const options =
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(contents),
+        };
+        const response = await fetch('https://words.dev-apis.com/validate-word', options);
+        const processedResponse = await response.json();
+        console.log(processedResponse.validWord);
+        return processedResponse.validWord;
     }
     catch(error)
     {
-
+        showError('Error in word validation');
     }
 }
+
+/* This isAWord function is actually unnecessary and should be in the code xD */
 function isAWord(userWord){
+    validateWord(userWord);
     return true;
-} */
+} 
 document.addEventListener('DOMContentLoaded', function(event){
     getWordOfDay().then(function(response){
         document.addEventListener('keydown', function(event){
