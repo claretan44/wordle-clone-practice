@@ -1,7 +1,3 @@
-/*NOTE TO FUTURE ME: the api post request is working (yay!) as in, sending to the url and receiving data
-but I haven't integrated it into the game yet so it just does console.log for now
-cause it's a.. async return so idk how to make the main game wait for it xD */
-
 let currLetter = 1;
 let currRow = 1;
 let currTile;
@@ -10,6 +6,7 @@ let rowClass;
 let filledWord = false;
 let wordOfTheDay = '';
 let finishedGame = false;
+let waitingForValidation = false;
 
 
 function showLoading(){
@@ -159,6 +156,7 @@ function showWin(rowNumber){
 async function validateWord(userWord){
     try
     {
+        showLoading();
         const contents = 
         {
             word: userWord,
@@ -173,7 +171,7 @@ async function validateWord(userWord){
         };
         const response = await fetch('https://words.dev-apis.com/validate-word', options);
         const processedResponse = await response.json();
-        console.log(processedResponse.validWord);
+        hideLoading();
         return processedResponse.validWord;
     }
     catch(error)
@@ -182,15 +180,10 @@ async function validateWord(userWord){
     }
 }
 
-/* This isAWord function is actually unnecessary and should be in the code xD */
-function isAWord(userWord){
-    validateWord(userWord);
-    return true;
-} 
 document.addEventListener('DOMContentLoaded', function(event){
     getWordOfDay().then(function(response){
         document.addEventListener('keydown', function(event){
-            if(!finishedGame){
+            if(!finishedGame && !waitingForValidation){
                 /*stop non-alpha characters */
                 if(isLetter(event.key))
                 {
@@ -213,31 +206,37 @@ document.addEventListener('DOMContentLoaded', function(event){
                             if(filledWord)
                             {
                                 let guess = getUserWord().toLowerCase();
-                                if(isAWord(guess)){
-                                    if (guess === wordOfTheDay)
-                                    {
-                                        showWin(currRow);
-                                        alert("YOU WIN!!!");
+                                waitingForValidation = true;
+                                validateWord(guess).then(function(isValid)
+                                {
+
+                                    waitingForValidation = false;
+                                    if(!isValid){
+                                        alert("Word not valid");
                                     }
                                     else
                                     {
-                                        processGuess(currRow, guess);
+                                        if (guess === wordOfTheDay)
+                                        {
+                                            showWin(currRow);
+                                            alert("YOU WIN!!!");
+                                        }
+                                        else
+                                        {
+                                            processGuess(currRow, guess);
+                                        }
+                                        filledWord = false;
+                                        if (currRow < 6)
+                                        {
+                                            currRow += 1;
+                                            currLetter = 1;
+                                        }
+                                        else if (currRow = 6)
+                                        {
+                                            finishedGame = true; //prevent more typing after the last guess
+                                        }
                                     }
-                                    filledWord = false;
-                                    if (currRow < 6)
-                                    {
-                                        currRow += 1;
-                                        currLetter = 1;
-                                    }
-                                    else if (currRow = 6)
-                                    {
-                                        finishedGame = true; //prevent more typing after the last guess
-                                    }
-                                }
-                                else
-                                {
-                                    //Todo: show the word was not a word
-                                }
+                                });
                             } 
                             break;
                         case 'Backspace':
