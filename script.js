@@ -135,11 +135,13 @@ function processGuess(rowNum, userGuess)
         userChara = userGuess.charAt(i-1);
         if (lettersInWordOfDay.includes(userChara))
         {
-            // all green tile characters have already been replaced
-            yellowTile(tile);
-            // remove so it doesn't get counted twice
-            const index = lettersInWordOfDay.indexOf(userChara);
-            lettersInWordOfDay[index] = '3';
+            // check that the tile wasn't already marked green
+            if(!(lettersInWordOfDay[i-1] === '3')){
+                yellowTile(tile);
+                // remove so it doesn't get counted twice
+                const index = lettersInWordOfDay.indexOf(userChara);
+                lettersInWordOfDay[index] = '3';
+            }
         }
     }
 
